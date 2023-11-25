@@ -11,7 +11,7 @@ app.use(cors());
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello, i hope you got your response'});
+  res.json({ message: 'Hello, i hope you got your response' });
 });
 
 app.get('/user', (req: Request, res: Response) => {

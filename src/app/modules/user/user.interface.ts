@@ -1,10 +1,9 @@
 // Creating type for Order
-export type Order = {
+export type TOrder = {
   productName: string;
   price: number;
   quantity: number;
 };
-
 
 // Creating Type for FullName
 export type TFullName = {
@@ -30,4 +29,5 @@ export type TUser = {
   isActive: boolean;
   hobbies: string[];
   address: TAddress;
+  orders?: [TOrder];
 };

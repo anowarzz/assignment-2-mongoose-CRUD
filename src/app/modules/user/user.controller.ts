@@ -30,6 +30,7 @@ const getAllUsers = async (req: Request, res: Response) => {
       message: 'Retrieved all users successfully',
       data: allUsers,
     });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     console.log(err);
@@ -42,5 +43,5 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 export const UserControllers = {
   createNewUser,
-  getAllUsers
+  getAllUsers,
 };
