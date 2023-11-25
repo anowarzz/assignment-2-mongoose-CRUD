@@ -5,8 +5,16 @@ import config from '../../config';
 
 // Creating fullName Schema
 const fullNameSchema = new Schema<TFullName>({
-  firstName: { type: String, required: [true, 'First Name Is Required'], maxlength: [20, "First Name Can Not Have More Than 10 Characters"]},
-  lastName: { type: String, required: [true, 'Last Name Is Required'], maxlength: [20, "First Name Can Not Have More Than 10 Characters"] },
+  firstName: {
+    type: String,
+    required: [true, 'First Name Is Required'],
+    maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Last Name Is Required'],
+    maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
+  },
 });
 
 // Creating an address Schema
@@ -55,7 +63,7 @@ const userSchema = new Schema<TUser>({
     required: [true, 'Hobbies Are Required'],
   },
   address: addressSchema,
-  orders: OrderSchema,
+  orders: [OrderSchema],
 });
 
 // Pre save middleware to hash the password before saving user into db

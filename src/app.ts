@@ -14,30 +14,23 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, i hope you got your response' });
 });
 
-app.get('/user', (req: Request, res: Response) => {
-  res.send('Hello my dear user');
+// route error handler
+app.all('*', (req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+  });
 });
 
-
-// route error handler
-app.all("*", (req: Request, res: Response) => {
-    res.status(404).json({
+// Global error handler
+app.use((error: Error, req: Request, res: Response) => {
+  if (error) {
+    res.status(400).json({
       success: false,
-      message: "Route not found",
+      message: 'something went wrong',
+      error: error.message,
     });
-  });
-  
-  // Global error handler
-  app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-    if (error) {
-      res.status(400).json({
-        success: false,
-        message: "something went wrong",
-        error: error.message 
-      });
-    }
-  });
-
-
+  }
+});
 
 export default app;
