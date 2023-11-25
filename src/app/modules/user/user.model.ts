@@ -5,8 +5,8 @@ import config from '../../config';
 
 // Creating fullName Schema
 const fullNameSchema = new Schema<TFullName>({
-  firstName: { type: String, required: [true, 'First Name Is Required'] },
-  lastName: { type: String, required: [true, 'Last Name Is Required'] },
+  firstName: { type: String, required: [true, 'First Name Is Required'], maxlength: [20, "First Name Can Not Have More Than 10 Characters"]},
+  lastName: { type: String, required: [true, 'Last Name Is Required'], maxlength: [20, "First Name Can Not Have More Than 10 Characters"] },
 });
 
 // Creating an address Schema

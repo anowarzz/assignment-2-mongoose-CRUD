@@ -1,27 +1,28 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserServices } from './user.service';
 
-// creating a new user
-const createNewUser = async (req: Request, res: Response) => {
+// ======>   creating a new user  ====>   //
+const createNewUser = async (req: Request, res: Response, next:NextFunction) => {
   try {
     const userData = req.body;
     const result = await UserServices.createNewUserToDB(userData);
 
+// sending response 
     res.status(200).json({
-      message: 'user created successfully ',
+      success: true,
+      message: 'User created successfully! ',
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    res.status(500).json({
-      message: 'something went wrong',
-      error: err.message,
-    });
+    next(err)
   }
 };
 
-// Fetching all users from the database
 
+
+
+// ====> Fetching all users from the database ===> 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const allUsers = await UserServices.getAllUsersFromDB();
@@ -33,10 +34,10 @@ const getAllUsers = async (req: Request, res: Response) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    console.log(err);
     res.status(500).json({
+        success: false,
       message: 'Something went wrong',
-      error: err.message,
+      error: err,
     });
   }
 };
