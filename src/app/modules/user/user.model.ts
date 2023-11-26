@@ -97,8 +97,8 @@ userSchema.pre('save', async function (next) {
 userSchema.set('toJSON', {
   transform: function (doc, ret) {
     delete ret.password;
-    delete ret.__v ;
-    delete ret._id ;
+    delete ret.__v;
+    delete ret._id;
     return ret;
   },
 });

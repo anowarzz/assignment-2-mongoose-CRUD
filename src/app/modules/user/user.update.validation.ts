@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-//=====> Zod validation Schema for user creation ====>
-
 // Full name validation with Zod
 const fullNameValidationSchema = z.object({
   firstName: z.string().min(1, { message: 'First Name Is Required' }).max(25, {
@@ -31,20 +29,23 @@ const orderValidationSchema = z.object({
     .positive({ message: 'Order Quantity must be a Positive number' }),
 });
 
-// User main object validation using Zod
-const userValidationSchema = z.object({
+// Update user validation schema using Zod
+const updateUserValidationSchema = z.object({
   userId: z.number().positive({ message: 'User Id must be a positive number' }),
-  username: z.string().min(1, { message: 'User Name Is Required' }),
-  password: z.string().min(1, { message: 'Password Is Required' }),
-  fullName: fullNameValidationSchema,
-  age: z.number().positive({ message: 'Age must be a positive number' }),
-  email: z.string().email({ message: 'Invalid email format' }),
-  isActive: z.boolean(),
-  hobbies: z.array(
-    z.string().min(1, { message: 'At least one hobby is required' }),
-  ),
-  address: addressValidationSchema,
+  username: z.string().min(1, { message: 'User Name Is Required' }).optional(),
+  password: z.string().min(1, { message: 'Password Is Required' }).optional(),
+  fullName: fullNameValidationSchema.optional(),
+  age: z
+    .number()
+    .positive({ message: 'Age must be a positive number' })
+    .optional(),
+  email: z.string().email({ message: 'Invalid email format' }).optional(),
+  isActive: z.boolean().optional(),
+  hobbies: z
+    .array(z.string().min(1, { message: 'At least one hobby is required' }))
+    .optional(),
+  address: addressValidationSchema.optional(),
   orders: z.array(orderValidationSchema).optional(),
 });
 
-export default userValidationSchema;
+export default updateUserValidationSchema;

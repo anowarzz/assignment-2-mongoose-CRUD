@@ -9,17 +9,19 @@ const createNewUserToDB = async (userData: TUser) => {
 
 // Fetching all users from Database
 const getAllUsersFromDB = async () => {
-  const users = await User.find().select({username: 1, fullName: 1, age:1, email:1, address:1 }).exec();
+  const users = await User.find()
+    .select({ username: 1, fullName: 1, age: 1, email: 1, address: 1 })
+    .exec();
   return users;
 };
-
-// "username fullName age email address -_id"
 
 //Fetching a single user from DB based on Id
 const getSingleUserFromDB = async (id: string) => {
   const user = await User.findOne({ userId: id });
   return user;
 };
+
+// updating a user information
 
 export const UserServices = {
   createNewUserToDB,

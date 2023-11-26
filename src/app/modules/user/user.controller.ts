@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
 import userValidationSchema from './user.validation';
+import { z } from 'zod';
 
 // ======>   creating a new user  ====>   //
 const createNewUser = async (req: Request, res: Response) => {
@@ -18,12 +19,30 @@ const createNewUser = async (req: Request, res: Response) => {
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: 'Something went wrong',
-      error: err.message,
-    });
+  } catch (error: any) {
+    // Handling  Zod validation errors
+    if (error instanceof z.ZodError) {
+      const errorDetails = error.errors.map((err) => ({
+        path: err.path.join('.'),
+        message: err.message,
+      }));
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong',
+        error: errorDetails,
+      });
+    }
+    // Handling MongodB error
+    if (error.code === 11000 && error.keyPattern) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      const errorMessage = `${duplicateField} must be unique.`;
+
+      res.status(500).json({
+        success: false,
+        message: 'Something went wrong',
+        error: errorMessage,
+      });
+    }
   }
 };
 
@@ -69,6 +88,8 @@ const getSingleUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+// update a user information
 
 export const UserControllers = {
   createNewUser,
