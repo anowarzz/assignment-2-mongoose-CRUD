@@ -12,4 +12,6 @@ router.get('/', UserControllers.getAllUsers);
 // Fetch Single User form the database
 router.get('/:userId', UserControllers.getSingleUser);
 
+
+
 export const UserRoutes = router;

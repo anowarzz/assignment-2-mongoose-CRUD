@@ -4,6 +4,7 @@ import userValidationSchema from './user.validation';
 import { z } from 'zod';
 import { ErrorHandlers } from './user.error.handler';
 
+
 // ======>   creating a new user  ====>   //
 const createNewUser = async (req: Request, res: Response) => {
   try {
@@ -87,6 +88,14 @@ const getSingleUser = async (req: Request, res: Response) => {
 };
 
 // update a user information
+
+const updateOneUser = async (req: Request, res:Response) => {
+
+
+}
+
+
+
 
 export const UserControllers = {
   createNewUser,
