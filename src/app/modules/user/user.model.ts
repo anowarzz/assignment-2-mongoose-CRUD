@@ -1,5 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { TAddress, TFullName, TOrder, TUser } from './user.interface';
+import {
+  TAddress,
+  TFullName,
+  TOrder,
+  TUser,
+  UserModel,
+} from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 
@@ -50,7 +56,7 @@ const OrderSchema = new Schema<TOrder>(
 );
 
 // Creating User Schema
-const userSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
     required: [true, 'User Id is Required'],
@@ -103,19 +109,11 @@ userSchema.set('toJSON', {
   },
 });
 
-// Post Saving middleware to remove the password field from the response
+// creating a custom static method to check if the user exists
 
-// userSchema.post('save', async function (doc:any, next) {
+userSchema.statics.isUserExists = async function (id: number) {
+  const existingUser = await User.findOne({ userId: id });
+  return existingUser;
+};
 
-//    const user = doc ;
-//     const parsedUser = JSON.parse(user)
-
-// delete parsedUser.password ;
-
-// const result = JSON.stringify(user)
-// return result ;
-
-// next();
-// })
-
-export const User = model<TUser>('User', userSchema);
+export const User = model<TUser, UserModel>('User', userSchema);

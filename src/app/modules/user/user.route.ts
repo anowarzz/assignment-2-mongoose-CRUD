@@ -12,6 +12,7 @@ router.get('/', UserControllers.getAllUsers);
 // Fetch Single User form the database
 router.get('/:userId', UserControllers.getSingleUser);
 
-
+// delete a user from the database
+router.delete('/:userId', UserControllers.deleteUser);
 
 export const UserRoutes = router;

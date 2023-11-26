@@ -3,16 +3,16 @@ import { UserServices } from './user.service';
 import userValidationSchema from './user.validation';
 import { z } from 'zod';
 import { ErrorHandlers } from './user.error.handler';
-
+import { User } from './user.model';
 
 // ======>   creating a new user  ====>   //
 const createNewUser = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
 
-const zodParsedUserData = userValidationSchema.parse(userData);
+    const zodParsedUserData = userValidationSchema.parse(userData);
 
-const result = await UserServices.createNewUserToDB(zodParsedUserData);
+    const result = await UserServices.createNewUserToDB(zodParsedUserData);
 
     // sending response
     res.status(200).json({
@@ -22,25 +22,23 @@ const result = await UserServices.createNewUserToDB(zodParsedUserData);
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-
-// Handling  Zod validation errors
+    // Handling  Zod validation errors
     if (error instanceof z.ZodError) {
-      const zodErrorResponse =  ErrorHandlers.zodErrorResponse(error) ;
-      res.status(500).json(zodErrorResponse)
+      const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
+      res.status(500).json(zodErrorResponse);
     }
-// Handling MongodB error
+    // Handling MongodB error
     else if (error.code === 11000 && error.keyPattern) {
-     const mongoErrorResponse =  ErrorHandlers.mongoErrorResponse(error)
-     res.status(500).json(mongoErrorResponse)
+      const mongoErrorResponse = ErrorHandlers.mongoErrorResponse(error);
+      res.status(500).json(mongoErrorResponse);
     }
     // Handling general error
-else{
-res.status(500).json({
-    success: false,
-    message: 'Something went wrong',
-    error: error.message ,
-  });
-}
+    else {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Something went wrong',
+      });
+    }
   }
 };
 
@@ -59,8 +57,7 @@ const getAllUsers = async (req: Request, res: Response) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: err.message,
+      message: err.message || 'Something went wrong',
     });
   }
 };
@@ -81,24 +78,48 @@ const getSingleUser = async (req: Request, res: Response) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     res.status(500).json({
       success: false,
-      message: 'Something went wrong',
-      error: err,
+      message: err.message || 'Something went wrong',
     });
   }
 };
 
 // update a user information
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.userId;
+    const numberTypeId = Number(id);
 
-const updateOneUser = async (req: Request, res:Response) => {
+    if (!(await User.isUserExists(numberTypeId))) {
+      res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      await UserServices.deleteUserFromDB(numberTypeId);
 
-
-}
-
-
-
+      res.status(200).json({
+        success: true,
+        message: 'User deleted successfully!',
+        data: null,
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Something went wrong',
+    });
+  }
+};
 
 export const UserControllers = {
   createNewUser,
   getAllUsers,
   getSingleUser,
+  deleteUser,
 };

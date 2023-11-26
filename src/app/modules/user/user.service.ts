@@ -3,6 +3,10 @@ import { User } from './user.model';
 
 // creating a user into Database
 const createNewUserToDB = async (userData: TUser): Promise<TUser> => {
+  if (await User.isUserExists(userData.userId)) {
+    throw new Error('This User Already Exists');
+  }
+
   const result = await User.create(userData);
   return result;
 };
@@ -22,10 +26,10 @@ const getSingleUserFromDB = async (id: string): Promise<TUser | null> => {
 };
 
 // updating a user information
-const updateUserIntoDB = async (id: string, userData: TUser): Promise<TUser | null> => {
-
-
-    
+const updateUserIntoDB = async (
+  id: string,
+  userData: TUser,
+): Promise<TUser | null> => {
   const result = await User.findByIdAndUpdate(id, userData, {
     new: true,
     runValidators: true,
@@ -33,18 +37,12 @@ const updateUserIntoDB = async (id: string, userData: TUser): Promise<TUser | nu
   return result;
 };
 
-
 // Delete One User from DB
-const deleteUserFromDB = async (id: string) : Promise<TUser | null> => {
+const deleteUserFromDB = async (id: number): Promise<TUser | null> => {
+  const result = await User.findOneAndDelete({ userId: id });
 
-const result = await User.findByIdAndDelete(id) ;
-
-return result ;
-
-} 
-
-
-
+  return result;
+};
 
 export const UserServices = {
   createNewUserToDB,
@@ -52,5 +50,4 @@ export const UserServices = {
   getSingleUserFromDB,
   updateUserIntoDB,
   deleteUserFromDB,
-  
 };

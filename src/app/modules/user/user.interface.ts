@@ -1,3 +1,5 @@
+import { Model } from 'mongoose';
+
 // Creating type for Order
 export type TOrder = {
   productName: string;
@@ -31,3 +33,8 @@ export type TUser = {
   address: TAddress;
   orders?: TOrder[];
 };
+
+export interface UserModel extends Model<TUser> {
+  // eslint-disable-next-line no-unused-vars
+  isUserExists(id: number): Promise<TUser | null>;
+}
