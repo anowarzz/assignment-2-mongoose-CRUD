@@ -25,13 +25,18 @@ const addressSchema = new Schema<TAddress>({
 });
 
 // Creating a Orders Schema
-
 const OrderSchema = new Schema<TOrder>({
   productName: {
     type: String,
     required: [true, 'Product Name Is Required'],
-    price: { type: Number, required: [true, 'Product Price is Required'] },
-    quantity: { type: Number, required: [true, 'Order Quantity is Required'] },
+  },
+  price: {
+    type: Number,
+    required: [true, 'Product Price is Required'],
+  },
+  quantity: {
+    type: Number,
+    required: [true, 'Order Quantity is Required'],
   },
 });
 
@@ -63,11 +68,10 @@ const userSchema = new Schema<TUser>({
     required: [true, 'Hobbies Are Required'],
   },
   address: addressSchema,
-  orders: [OrderSchema],
+  orders: { type: [OrderSchema], default: [], required: false },
 });
 
-// Pre save middleware to hash the password before saving user into db
-
+// Pre save middleware - to hash the password before saving user into db
 userSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const userData = this;
@@ -80,5 +84,13 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+// Post Saving middleware to remove the password field from the response
+
+// userSchema.post('save', async function (doc, next) {
+// const user = ;
+
+// next();
+// })
 
 export const User = model<TUser>('User', userSchema);

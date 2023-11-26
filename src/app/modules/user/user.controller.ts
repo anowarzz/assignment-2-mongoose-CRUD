@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { UserServices } from './user.service';
+import userValidationSchema from './user.validation';
 
 // ======>   creating a new user  ====>   //
-const createNewUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const createNewUser = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
-    const result = await UserServices.createNewUserToDB(userData);
+
+    const zodParsedUserData = userValidationSchema.parse(userData);
+
+    const result = await UserServices.createNewUserToDB(zodParsedUserData);
 
     // sending response
     res.status(200).json({
@@ -19,7 +19,11 @@ const createNewUser = async (
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    next(err);
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err.message,
+    });
   }
 };
 
@@ -39,7 +43,7 @@ const getAllUsers = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Something went wrong',
-      error: err,
+      error: err.message,
     });
   }
 };
