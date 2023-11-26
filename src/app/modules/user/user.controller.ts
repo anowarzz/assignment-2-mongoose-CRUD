@@ -66,7 +66,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user = await UserServices.getSingleUserFromDB(userId);
+    const user = await UserServices.getSingleUserFromDB(Number(userId));
 
     res.status(200).json({
       success: true,
@@ -117,9 +117,48 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// update a user information into database
+const updateUser = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.userId;
+    const numberTypeId = Number(id);
+    const updatedInfo = req.body;
+
+    if (!(await User.isUserExists(numberTypeId))) {
+      res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      const updatedUser = await UserServices.updateUserIntoDB(
+        numberTypeId,
+        updatedInfo,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'User updated successfully!',
+        data: updatedUser,
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Something went wrong',
+    });
+  }
+};
+
 export const UserControllers = {
   createNewUser,
   getAllUsers,
   getSingleUser,
+  updateUser,
   deleteUser,
 };

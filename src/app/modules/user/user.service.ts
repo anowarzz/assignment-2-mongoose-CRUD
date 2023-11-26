@@ -3,10 +3,6 @@ import { User } from './user.model';
 
 // creating a user into Database
 const createNewUserToDB = async (userData: TUser): Promise<TUser> => {
-  if (await User.isUserExists(userData.userId)) {
-    throw new Error('This User Already Exists');
-  }
-
   const result = await User.create(userData);
   return result;
 };
@@ -20,17 +16,17 @@ const getAllUsersFromDB = async (): Promise<TUser[]> => {
 };
 
 //Fetching a single user from DB based on Id
-const getSingleUserFromDB = async (id: string): Promise<TUser | null> => {
+const getSingleUserFromDB = async (id: number): Promise<TUser | null> => {
   const user = await User.findOne({ userId: id });
   return user;
 };
 
 // updating a user information
 const updateUserIntoDB = async (
-  id: string,
+  id: number,
   userData: TUser,
 ): Promise<TUser | null> => {
-  const result = await User.findByIdAndUpdate(id, userData, {
+  const result = await User.findOneAndUpdate({ userId: id }, userData, {
     new: true,
     runValidators: true,
   });

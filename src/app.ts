@@ -11,7 +11,10 @@ app.use(cors());
 app.use('/api/users', UserRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello, i hope you got your response' });
+  res.json({
+    success: true,
+    message: 'Welcome to User Management API',
+  });
 });
 
 // route error handler
