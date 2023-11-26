@@ -4,44 +4,50 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 
 // Creating fullName Schema
-const fullNameSchema = new Schema<TFullName>({
-  firstName: {
-    type: String,
-    required: [true, 'First Name Is Required'],
-    maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
+const fullNameSchema = new Schema<TFullName>(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'First Name Is Required'],
+      maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Last Name Is Required'],
+      maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
+    },
   },
-  lastName: {
-    type: String,
-    required: [true, 'Last Name Is Required'],
-    maxlength: [25, 'First Name Can Not Have More Than 25 Characters'],
-  },
-},
-{_id: false});
+  { _id: false },
+);
 
 // Creating an address Schema
-const addressSchema = new Schema<TAddress>({
-  street: { type: String, required: [true, 'Street Name Is Required'] },
-  city: { type: String, required: [true, 'City Is Required'] },
-  country: { type: String, required: [true, 'Street Name Is Required'] },
-},
-{_id: false});
+const addressSchema = new Schema<TAddress>(
+  {
+    street: { type: String, required: [true, 'Street Name Is Required'] },
+    city: { type: String, required: [true, 'City Is Required'] },
+    country: { type: String, required: [true, 'Street Name Is Required'] },
+  },
+  { _id: false },
+);
 
 // Creating a Orders Schema
-const OrderSchema = new Schema<TOrder>({
-  productName: {
-    type: String,
-    required: [true, 'Product Name Is Required'],
+const OrderSchema = new Schema<TOrder>(
+  {
+    productName: {
+      type: String,
+      required: [true, 'Product Name Is Required'],
+    },
+    price: {
+      type: Number,
+      required: [true, 'Product Price is Required'],
+    },
+    quantity: {
+      type: Number,
+      required: [true, 'Order Quantity is Required'],
+    },
   },
-  price: {
-    type: Number,
-    required: [true, 'Product Price is Required'],
-  },
-  quantity: {
-    type: Number,
-    required: [true, 'Order Quantity is Required'],
-  },
-},
-{_id: false});
+  { _id: false },
+);
 
 // Creating User Schema
 const userSchema = new Schema<TUser>({
@@ -71,7 +77,7 @@ const userSchema = new Schema<TUser>({
     required: [true, 'Hobbies Are Required'],
   },
   address: addressSchema,
-  orders: { type: [OrderSchema], default: [], required: false},
+  orders: { type: [OrderSchema], default: [], required: false },
 });
 
 // Pre save middleware - to hash the password before saving user into db
@@ -88,19 +94,26 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-
-
 userSchema.set('toJSON', {
-    transform: function (doc, ret) {
-      delete ret.password;
-      return ret;
-    },
-  });
+  transform: function (doc, ret) {
+    delete ret.password;
+    delete ret.__v ;
+    delete ret._id ;
+    return ret;
+  },
+});
 
 // Post Saving middleware to remove the password field from the response
 
-// userSchema.post('save', async function (doc, next) {
-// const user = ;
+// userSchema.post('save', async function (doc:any, next) {
+
+//    const user = doc ;
+//     const parsedUser = JSON.parse(user)
+
+// delete parsedUser.password ;
+
+// const result = JSON.stringify(user)
+// return result ;
 
 // next();
 // })
