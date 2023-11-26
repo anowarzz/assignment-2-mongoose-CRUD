@@ -2,15 +2,16 @@ import { Request, Response } from 'express';
 import { UserServices } from './user.service';
 import userValidationSchema from './user.validation';
 import { z } from 'zod';
+import { ErrorHandlers } from './user.error.handler';
 
 // ======>   creating a new user  ====>   //
 const createNewUser = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
 
-    const zodParsedUserData = userValidationSchema.parse(userData);
+const zodParsedUserData = userValidationSchema.parse(userData);
 
-    const result = await UserServices.createNewUserToDB(zodParsedUserData);
+const result = await UserServices.createNewUserToDB(zodParsedUserData);
 
     // sending response
     res.status(200).json({
@@ -20,29 +21,25 @@ const createNewUser = async (req: Request, res: Response) => {
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    // Handling  Zod validation errors
-    if (error instanceof z.ZodError) {
-      const errorDetails = error.errors.map((err) => ({
-        path: err.path.join('.'),
-        message: err.message,
-      }));
-      res.status(500).json({
-        success: false,
-        message: 'Something went wrong',
-        error: errorDetails,
-      });
-    }
-    // Handling MongodB error
-    if (error.code === 11000 && error.keyPattern) {
-      const duplicateField = Object.keys(error.keyPattern)[0];
-      const errorMessage = `${duplicateField} must be unique.`;
 
-      res.status(500).json({
-        success: false,
-        message: 'Something went wrong',
-        error: errorMessage,
-      });
+// Handling  Zod validation errors
+    if (error instanceof z.ZodError) {
+      const zodErrorResponse =  ErrorHandlers.zodErrorResponse(error) ;
+      res.status(500).json(zodErrorResponse)
     }
+// Handling MongodB error
+    else if (error.code === 11000 && error.keyPattern) {
+     const mongoErrorResponse =  ErrorHandlers.mongoErrorResponse(error)
+     res.status(500).json(mongoErrorResponse)
+    }
+    // Handling general error
+else{
+res.status(500).json({
+    success: false,
+    message: 'Something went wrong',
+    error: error.message ,
+  });
+}
   }
 };
 
