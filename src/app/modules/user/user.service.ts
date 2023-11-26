@@ -9,9 +9,11 @@ const createNewUserToDB = async (userData: TUser) => {
 
 // Fetching all users from Database
 const getAllUsersFromDB = async () => {
-  const users = await User.find();
+  const users = await User.find().select({username: 1, fullName: 1, age:1, email:1, address:1 }).exec();
   return users;
 };
+
+// "username fullName age email address -_id"
 
 //Fetching a single user from DB based on Id
 const getSingleUserFromDB = async (id: string) => {
