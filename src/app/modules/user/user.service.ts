@@ -42,7 +42,6 @@ const deleteUserFromDB = async (id: number): Promise<TUser | null> => {
 };
 
 // Add Order into users order array
-
 const addOrderIntoDB = async (
   id: number,
   order: TOrder,
@@ -55,6 +54,13 @@ const addOrderIntoDB = async (
   return result;
 };
 
+// Find all the orders of an user
+
+const getOrdersOfUser = async (id: number) => {
+  const userOrders = await User.findOne({ userId: id }).select({ orders: 1 });
+  return userOrders;
+};
+
 export const UserServices = {
   createNewUserToDB,
   getAllUsersFromDB,
@@ -62,4 +68,5 @@ export const UserServices = {
   updateUserIntoDB,
   deleteUserFromDB,
   addOrderIntoDB,
+  getOrdersOfUser,
 };

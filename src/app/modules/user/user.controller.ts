@@ -213,6 +213,42 @@ const addOrder = async (req: Request, res: Response) => {
   }
 };
 
+// Add a order into users order array
+const findUserOrders = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.userId);
+
+    if (!(await User.isUserExists(id))) {
+      res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      const orders = await UserServices.getOrdersOfUser(id);
+      res.status(200).json({
+        success: true,
+        message: 'Order fetched successfully',
+        data: orders,
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
+      res.status(500).json(zodErrorResponse);
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Something went wrong',
+      });
+    }
+  }
+};
+
 export const UserControllers = {
   createNewUser,
   getAllUsers,
@@ -220,4 +256,5 @@ export const UserControllers = {
   updateUser,
   deleteUser,
   addOrder,
+  findUserOrders,
 };
