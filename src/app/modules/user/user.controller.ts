@@ -70,6 +70,7 @@ const getSingleUser = async (req: Request, res: Response): Promise<void> => {
     const { userId } = req.params;
     const numberTypeUserId = Number(userId);
 
+    // checking user existence
     if (!(await User.isUserExists(numberTypeUserId))) {
       res.status(500).json({
         success: false,
@@ -105,6 +106,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     const updatedInfo = req.body;
     const validatedUpdates = userUpdateValidationSchema.parse(updatedInfo);
 
+    // checking user existence
     if (!(await User.isUserExists(numberTypeId))) {
       res.status(500).json({
         success: false,
@@ -138,10 +140,10 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 // Delete a user information from database
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const id = req.params.userId;
-    const numberTypeUserId = Number(id);
+    const userId = Number(req.params.userId);
 
-    if (!(await User.isUserExists(numberTypeUserId))) {
+    // checking user existence
+    if (!(await User.isUserExists(userId))) {
       res.status(500).json({
         success: false,
         message: 'User not found',
@@ -151,7 +153,7 @@ const deleteUser = async (req: Request, res: Response) => {
         },
       });
     } else {
-      await UserServices.deleteUserFromDB(numberTypeUserId);
+      await UserServices.deleteUserFromDB(userId);
 
       res.status(200).json({
         success: true,
@@ -177,10 +179,11 @@ const deleteUser = async (req: Request, res: Response) => {
 // Add a order into users order array
 const addOrder = async (req: Request, res: Response) => {
   try {
-    const id = Number(req.params.userId);
+    const userId = Number(req.params.userId);
     const order = req.body;
 
-    if (!(await User.isUserExists(id))) {
+    // checking user existence
+    if (!(await User.isUserExists(userId))) {
       res.status(500).json({
         success: false,
         message: 'User not found',
@@ -191,7 +194,7 @@ const addOrder = async (req: Request, res: Response) => {
       });
     } else {
       const validatedOrder = orderValidationSchema.parse(order);
-      await UserServices.addOrderIntoDB(id, validatedOrder);
+      await UserServices.addOrderIntoDB(userId, validatedOrder);
 
       res.status(200).json({
         success: true,
@@ -214,11 +217,12 @@ const addOrder = async (req: Request, res: Response) => {
 };
 
 // Add a order into users order array
-const findUserOrders = async (req: Request, res: Response) => {
+const getUserOrders = async (req: Request, res: Response) => {
   try {
-    const id = Number(req.params.userId);
+    const userId = Number(req.params.userId);
 
-    if (!(await User.isUserExists(id))) {
+    // checking user existence
+    if (!(await User.isUserExists(userId))) {
       res.status(500).json({
         success: false,
         message: 'User not found',
@@ -228,11 +232,50 @@ const findUserOrders = async (req: Request, res: Response) => {
         },
       });
     } else {
-      const orders = await UserServices.getOrdersOfUser(id);
+      const orders = await UserServices.getOrdersOfUser(userId);
       res.status(200).json({
         success: true,
         message: 'Order fetched successfully',
         data: orders,
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
+      res.status(500).json(zodErrorResponse);
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Something went wrong',
+      });
+    }
+  }
+};
+
+// Add a order into users order array
+const getOrderTotalPrice = async (req: Request, res: Response) => {
+  try {
+    const userId = Number(req.params.userId);
+
+    // checking user existence
+    if (!(await User.isUserExists(userId))) {
+      res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      const ordersPrice = await UserServices.getTotalPriceOfOrders(userId);
+      res.status(200).json({
+        success: true,
+        message: 'Total Price calculated successfully',
+        data: {
+          totalPrice: ordersPrice,
+        },
       });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -256,5 +299,6 @@ export const UserControllers = {
   updateUser,
   deleteUser,
   addOrder,
-  findUserOrders,
+  getUserOrders,
+  getOrderTotalPrice,
 };

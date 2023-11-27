@@ -54,11 +54,27 @@ const addOrderIntoDB = async (
   return result;
 };
 
-// Find all the orders of an user
-
+// Get all the orders of an user
 const getOrdersOfUser = async (id: number) => {
   const userOrders = await User.findOne({ userId: id }).select({ orders: 1 });
   return userOrders;
+};
+
+// Get the total price of orders of a user
+const getTotalPriceOfOrders = async (id: number): Promise<number> => {
+  const user = await User.findOne({ userId: id }).select({ orders: 1 }).exec();
+
+  if (user) {
+    const orders = user.orders || [];
+    const totalPrice: number = orders.reduce(
+      (sum, order) => sum + order.price * order.quantity,
+      0,
+    );
+
+    return totalPrice;
+  } else {
+    return 0;
+  }
 };
 
 export const UserServices = {
@@ -69,4 +85,5 @@ export const UserServices = {
   deleteUserFromDB,
   addOrderIntoDB,
   getOrdersOfUser,
+  getTotalPriceOfOrders,
 };
