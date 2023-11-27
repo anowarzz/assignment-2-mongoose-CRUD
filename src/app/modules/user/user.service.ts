@@ -1,5 +1,6 @@
+
 import { TUser } from './user.interface';
-import { User } from './user.model';
+import { User} from './user.model';
 
 // creating a user into Database
 const createNewUserToDB = async (userData: TUser): Promise<TUser> => {
@@ -24,7 +25,8 @@ const getSingleUserFromDB = async (id: number): Promise<TUser | null> => {
 // updating a user information
 const updateUserIntoDB = async (
   id: number,
-  userData: TUser,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  userData: any
 ): Promise<TUser | null> => {
   const result = await User.findOneAndUpdate({ userId: id }, userData, {
     new: true,

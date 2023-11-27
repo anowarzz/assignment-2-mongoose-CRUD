@@ -56,7 +56,7 @@ const OrderSchema = new Schema<TOrder>(
 );
 
 // Creating User Schema
-const userSchema = new Schema<TUser, UserModel>({
+export const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
     required: [true, 'User Id is Required'],
