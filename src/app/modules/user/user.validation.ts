@@ -21,7 +21,7 @@ const addressValidationSchema = z.object({
 });
 
 // Order validation with Zod
-const orderValidationSchema = z.object({
+export const orderValidationSchema = z.object({
   productName: z.string().min(1, { message: 'Product Name Is Required' }),
   price: z
     .number()
@@ -47,46 +47,41 @@ export const userValidationSchema = z.object({
   orders: z.array(orderValidationSchema).optional(),
 });
 
-
-
-
-
-
 // // Update user validation schema using Zod
 // export const updateUserValidationSchema = z.object({
 //     userId: z.number().positive().optional(),
-  
+
 //     username: z.string().min(1).optional(),
-  
+
 //     password: z.string().min(1).optional(),
-  
+
 //     fullName: fullNameValidationSchema.optional(),
-    
+
 //     age: z.number().positive().optional(),
-  
+
 //     email: z.string().email().optional(),
-  
+
 //     isActive: z.boolean().optional(),
-  
+
 //     hobbies: z.array(z.string().min(1)).optional(),
-  
+
 //     address: addressValidationSchema.optional(),
-  
+
 //     orders: z.array(orderValidationSchema).optional(),
 //   })
 
-
-
-
-
-//  UPDATE USER VALIDATION SCHEMA USING ZOD 
+//  UPDATE USER VALIDATION SCHEMA USING ZOD
 //=====> Zod validation Schema for user update ===>
 
 // Full name validation with Zod
 const updateFullNameValidationSchema = z.object({
-  firstName: z.string().min(1, { message: 'First Name Is Required' }).max(25, {
-    message: "First Name Can't be More than 25 Characters says zod",
-  }).optional(),
+  firstName: z
+    .string()
+    .min(1, { message: 'First Name Is Required' })
+    .max(25, {
+      message: "First Name Can't be More than 25 Characters says zod",
+    })
+    .optional(),
   lastName: z
     .string()
     .min(1, { message: 'Last Name Is Required' })
@@ -103,7 +98,10 @@ const updateAddressValidationSchema = z.object({
 
 // Order validation with Zod
 const updateOrderValidationSchema = z.object({
-  productName: z.string().min(1, { message: 'Product Name Is Required' }).optional(),
+  productName: z
+    .string()
+    .min(1, { message: 'Product Name Is Required' })
+    .optional(),
   price: z
     .number()
     .positive({ message: 'Product Price must be a positive number' })
@@ -116,16 +114,22 @@ const updateOrderValidationSchema = z.object({
 
 // User main object validation using Zod
 export const userUpdateValidationSchema = z.object({
-  userId: z.number().positive({ message: 'User Id must be a positive number' }).optional(),
+  userId: z
+    .number()
+    .positive({ message: 'User Id must be a positive number' })
+    .optional(),
   username: z.string().min(1, { message: 'User Name Is Required' }).optional(),
   password: z.string().min(1, { message: 'Password Is Required' }).optional(),
   fullName: updateFullNameValidationSchema.optional(),
-  age: z.number().positive({ message: 'Age must be a positive number' }).optional(),
+  age: z
+    .number()
+    .positive({ message: 'Age must be a positive number' })
+    .optional(),
   email: z.string().email({ message: 'Invalid email format' }).optional(),
   isActive: z.boolean().optional(),
-  hobbies: z.array(
-    z.string().min(1, { message: 'At least one hobby is required' }),
-  ).optional(),
+  hobbies: z
+    .array(z.string().min(1, { message: 'At least one hobby is required' }))
+    .optional(),
   address: updateAddressValidationSchema.optional(),
   orders: z.array(updateOrderValidationSchema).optional(),
 });

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.service';
 import {
+  orderValidationSchema,
   userUpdateValidationSchema,
   userValidationSchema,
 } from './user.validation';
@@ -127,7 +128,6 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-
     if (error instanceof z.ZodError) {
       const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
       res.status(500).json(zodErrorResponse);
@@ -161,11 +161,55 @@ const deleteUser = async (req: Request, res: Response) => {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
+      res.status(500).json(zodErrorResponse);
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     res.status(500).json({
       success: false,
       message: error.message || 'Something went wrong',
     });
+  }
+};
+
+// Add a order into users order array
+const addOrder = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.userId);
+    const order = req.body;
+
+    if (!(await User.isUserExists(id))) {
+      res.status(500).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    } else {
+      const validatedOrder = orderValidationSchema.parse(order);
+      await UserServices.addOrderIntoDB(id, validatedOrder);
+
+      res.status(200).json({
+        success: true,
+        message: 'Order create successfully',
+        data: null,
+      });
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      const zodErrorResponse = ErrorHandlers.zodErrorResponse(error);
+      res.status(500).json(zodErrorResponse);
+    } else {
+      res.status(500).json({
+        success: false,
+        message: error.message || 'Something went wrong',
+      });
+    }
   }
 };
 
@@ -175,4 +219,5 @@ export const UserControllers = {
   getSingleUser,
   updateUser,
   deleteUser,
+  addOrder,
 };

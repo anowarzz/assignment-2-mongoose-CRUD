@@ -1,7 +1,5 @@
 // import { z } from 'zod';
 
-
-
 // // Full name validation with Zod
 // const fullNameValidationSchema = z.object({
 //   firstName: z.string().min(1, { message: 'First Name Is Required' }).max(25, {
@@ -40,7 +38,7 @@
 //   password: z.string().min(1).optional(),
 
 //   fullName: fullNameValidationSchema.optional(),
-  
+
 //   age: z.number().positive().optional(),
 
 //   email: z.string().email().optional(),

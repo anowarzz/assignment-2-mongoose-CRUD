@@ -15,7 +15,10 @@ router.get('/:userId', UserControllers.getSingleUser);
 // Update a user information into database
 router.put('/:userId', UserControllers.updateUser);
 
-// delete a user from the database
+// Delete a user from the database
 router.delete('/:userId', UserControllers.deleteUser);
+
+// Add order into user's order array
+router.put('/:userId/orders', UserControllers.addOrder);
 
 export const UserRoutes = router;

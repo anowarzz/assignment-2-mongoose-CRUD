@@ -1,6 +1,5 @@
-
-import { TUser } from './user.interface';
-import { User} from './user.model';
+import { TOrder, TUser } from './user.interface';
+import { User } from './user.model';
 
 // creating a user into Database
 const createNewUserToDB = async (userData: TUser): Promise<TUser> => {
@@ -26,7 +25,7 @@ const getSingleUserFromDB = async (id: number): Promise<TUser | null> => {
 const updateUserIntoDB = async (
   id: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  userData: any
+  userData: any,
 ): Promise<TUser | null> => {
   const result = await User.findOneAndUpdate({ userId: id }, userData, {
     new: true,
@@ -42,10 +41,25 @@ const deleteUserFromDB = async (id: number): Promise<TUser | null> => {
   return result;
 };
 
+// Add Order into users order array
+
+const addOrderIntoDB = async (
+  id: number,
+  order: TOrder,
+): Promise<TUser | null> => {
+  const result = await User.findOneAndUpdate(
+    { userId: id },
+    { $push: { orders: order } },
+    { new: true, upsert: true },
+  );
+  return result;
+};
+
 export const UserServices = {
   createNewUserToDB,
   getAllUsersFromDB,
   getSingleUserFromDB,
   updateUserIntoDB,
   deleteUserFromDB,
+  addOrderIntoDB,
 };
