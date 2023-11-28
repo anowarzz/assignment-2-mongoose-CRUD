@@ -8,7 +8,7 @@ const createNewUserToDB = async (userData: TUser): Promise<TUser> => {
 };
 
 // Fetching all users from Database
-const getAllUsersFromDB = async (): Promise<TUser[]> => {
+const getAllUsersFromDB = async (): Promise<TUser[] | []> => {
   const users = await User.find()
     .select({ username: 1, fullName: 1, age: 1, email: 1, address: 1 })
     .exec();

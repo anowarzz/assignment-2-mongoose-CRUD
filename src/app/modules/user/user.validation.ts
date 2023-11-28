@@ -47,30 +47,6 @@ export const userValidationSchema = z.object({
   orders: z.array(orderValidationSchema).optional(),
 });
 
-// // Update user validation schema using Zod
-// export const updateUserValidationSchema = z.object({
-//     userId: z.number().positive().optional(),
-
-//     username: z.string().min(1).optional(),
-
-//     password: z.string().min(1).optional(),
-
-//     fullName: fullNameValidationSchema.optional(),
-
-//     age: z.number().positive().optional(),
-
-//     email: z.string().email().optional(),
-
-//     isActive: z.boolean().optional(),
-
-//     hobbies: z.array(z.string().min(1)).optional(),
-
-//     address: addressValidationSchema.optional(),
-
-//     orders: z.array(orderValidationSchema).optional(),
-//   })
-
-//  UPDATE USER VALIDATION SCHEMA USING ZOD
 //=====> Zod validation Schema for user update ===>
 
 // Full name validation with Zod
