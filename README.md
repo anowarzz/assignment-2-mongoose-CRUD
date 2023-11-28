@@ -4,8 +4,8 @@ This is a TypeScript Express Application with Mongoose for MongoDB CRUD operatio
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) installed on your machine
-- [MongoDB](https://www.mongodb.com/) installed locally or a MongoDB database URL
+- [Node.js](https://nodejs.org/) Needs to be installed on your machine
+- [MongoDB](https://www.mongodb.com/) Needs to be installed locally or a You have MongoDB database URL
 
 ## Installation
 
